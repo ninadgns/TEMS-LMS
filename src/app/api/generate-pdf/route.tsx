@@ -7,6 +7,7 @@ import fontKit from '@pdf-lib/fontkit'
 import { readFile } from 'fs/promises';
 import { logoBW } from '@/lib/logo';
 import { comicSansBoldFontByte } from '@/lib/comicsansbold';
+import { format } from 'date-fns';
 
 
 
@@ -20,15 +21,33 @@ function toTitleCase(str: string) {
 }
 
 
+// examInfo: {
+//     examTopic: string;
+//     examFullMark: number;
+//     batchName: string;
+//     category: string;
+//     subject: string;
+//     examDate: Date;
+// }
+
+function toBritishDateString(date: Date): string {
+	const day = String(date.getDate()).padStart(2, '0');
+	const month = date.toLocaleString('en-GB', { month: 'long' });
+	const year = date.getFullYear();
+
+	return `${day} ${month} ${year}`;
+}
+
+
 
 
 export async function POST(request: NextRequest) {
 	var data = await request.json();
 	const examInfo = data.examInfo;
-	const examName =  examInfo.name;
-	const examBatchName = examInfo.batch + " Batch";
-	const examDate = "Date: " + examInfo.date;
-	const examFullMark = "Full Mark: " + examInfo.fullMark;
+	const examName = examInfo.examTopic;
+	const examFullMark = "Full Mark: " + examInfo.examFullMark;
+	const examBatchName = examInfo.batchName + " " + examInfo.category + " " + examInfo.subject + " Batch";
+	const examDate = "Date: " + format(examInfo.examDate, 'dd MMMM yyyy'); 
 	data = data.resultEntries;
 
 	const pdfDoc = await PDFDocument.create();

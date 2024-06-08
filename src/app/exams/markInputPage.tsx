@@ -11,7 +11,7 @@ import React, { useState, useRef } from 'react';
 import { AllStudents } from '../../lib/data';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { ExamInfo, ResultData, ResultEntry } from '@/lib/types';
+import { ExamInfo, ResultData, ResultEntry, ResultEntryWithSuffix } from '@/lib/types';
 import { columns } from "./columns";
 import { DataTable } from './dataTable';
 import { Router } from 'next/router';
@@ -23,20 +23,20 @@ import {
 } from "@/components/ui/popover"
 import { Calendar } from "@/components/ui/calendar"
 import { getOrdinalSuffix, isSubsequence } from "@/lib/utils";
+import { toast, useToast } from "@/components/ui/use-toast";
+import { Title, ToastAction } from "@radix-ui/react-toast";
 
 const Dictionary = AllStudents;
 
 
+export interface ExamInfoProps {
+    examData: ExamInfo
+}
 
 
 
-const InputWithSuggestions: React.FC = () => {
-    const [examInfo, setExamInfo] = useState<ExamInfo>({ date: "", fullMark: 100, name: "", batch: "" });
-    const [date, setDate] = React.useState("");
-    const [fullMark, setFullMark] = useState<string>("10");
+const InputWithSuggestions: React.FC<ExamInfoProps> = ({ examData }) => {
 
-    const [batchName, setBatchName] = useState<string>();
-    const [examName, setExamName] = useState<string>();
     const [data, setData] = useState<ResultEntry[]>([]);
     const [inputName, setInputName] = useState('');
     const [inputMark, setInputMark] = useState('');
@@ -44,17 +44,8 @@ const InputWithSuggestions: React.FC = () => {
     const inputRef = useRef<HTMLInputElement>(null);
     const markRef = useRef<HTMLInputElement>(null);
 
-    type ResultEntry2 = {
-        serial: number
-        name: string
-        marks: number
-        position: string
-    }
+    
 
-    type ResultData2 = {
-        resultEntries: ResultEntry2[],
-        examInfo: ExamInfo,
-    }
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value;
         setInputName(value);
@@ -63,9 +54,9 @@ const InputWithSuggestions: React.FC = () => {
         setSuggestions(filteredSuggestions);
     };
     const handleDownload = async () => {
-        const rearrangedResults: ResultEntry2[] = [];
+        const rearrangedResults: ResultEntryWithSuffix[] = [];
         data.forEach(result => {
-            const rearrangedResult: ResultEntry2 = {
+            const rearrangedResult: ResultEntryWithSuffix = {
                 serial: result.serial,
                 name: result.name,
                 marks: result.marks,
@@ -75,16 +66,16 @@ const InputWithSuggestions: React.FC = () => {
         });
 
 
-        var examData: ResultData2 = {
+        var processedExamData: ResultData = {
             resultEntries: rearrangedResults,
-            examInfo: examInfo
+            examInfo: examData
         }
         const response = await fetch('/api/generate-pdf', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(examData),
+            body: JSON.stringify(processedExamData),
         });
 
 
@@ -121,7 +112,9 @@ const InputWithSuggestions: React.FC = () => {
         console.log('Name:', inputName);
         console.log('Mark:', inputMark);
         setData(() => {
-            const a = [...data, { name: inputName, marks: parseFloat(inputMark), position: null, serial: 0 }].sort((a, b) => b.marks - a.marks);
+            const a = [...data, { name: inputName, marks: parseFloat(inputMark), position: null, serial: 0 }]
+            .sort((a, b) => b.serial - a.serial)
+            .sort((a, b) => b.marks - a.marks);
             let currentPosition = 1;
             let currentMarks = a[0]?.marks;
 
@@ -144,21 +137,7 @@ const InputWithSuggestions: React.FC = () => {
         setInputName('');
         inputRef.current?.focus();
     };
-
-    const handleExamSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
-        var a: ExamInfo = {
-            fullMark: parseFloat(fullMark.toString()),
-            name: examName || "",
-            // date: date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
-            date: date,
-            // batch: batchName as "Alpha" | "Sigma" | "Gamma"
-            batch: batchName || ""
-
-        }
-        // console.log(a.date)
-        setExamInfo(a);
-    }
+    const { toast } = useToast();
 
     return (
         <div className='p-5' >
@@ -166,72 +145,6 @@ const InputWithSuggestions: React.FC = () => {
             <div className="mb-5">
                 <DataTable columns={columns} data={data} />
             </div>
-            <form onSubmit={handleExamSubmit} className='flex gap-1'>
-                <Input
-                    type='text'
-                    value={examName}
-                    placeholder='Modular Arithmatic'
-                    onChange={(e) => setExamName(e.target.value)}
-
-                />
-                <Input
-                    type='number'
-                    value={fullMark}
-                    placeholder='Total Marks'
-                    onChange={(e) => setFullMark(e.target.value)}
-
-                />
-                <Input
-                    type='text'
-                    value={batchName}
-                    placeholder='Batch Name'
-                    onChange={(e) => setBatchName(e.target.value)}
-                />
-                <Input
-                    type='text'
-                    value={date}
-                    placeholder='Exam Date'
-                    onChange={(e) => setDate(e.target.value)}
-                />
-                {/* <Select >
-                    <SelectTrigger className="w-[280px]">
-                        <SelectValue placeholder="Batch" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="Alpha">Alpha</SelectItem>
-                        <SelectItem value="Sigma">Sigma</SelectItem>
-                        <SelectItem value="Gamma">Gamma</SelectItem>
-                    </SelectContent>
-                </Select> */}
-
-                {/* <Popover>
-                    <PopoverTrigger asChild>
-                        <Button
-                            variant={"outline"}
-                            className={cn(
-                                "w-[280px] justify-start text-left font-normal",
-                                !examInfo?.date && "text-muted-foreground"
-                            )}
-                        >
-                            <CalendarIcon className="mr-2 h-4 w-4" />
-                            {date ? format(date, "PPP") : <span>Pick a date</span>}
-                        </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0">
-                        <Calendar
-                            mode="single"
-                            selected={date}
-                            // onSelect={setDate}
-                            initialFocus
-                        />
-                    </PopoverContent>
-                </Popover> */}
-
-
-                <Button type="submit" >
-                    Save Exam Info
-                </Button>
-            </form>
             <form onSubmit={handleFormSubmit} className="flex gap-1 mt-2">
                 <Input
                     type="text"
