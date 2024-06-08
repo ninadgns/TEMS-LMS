@@ -9,7 +9,7 @@ export type ResultEntry = {
     batch: string
     name: string
     fullMark: number
-    date: Date
+    date: string
   }
   
   export type ResultData = {

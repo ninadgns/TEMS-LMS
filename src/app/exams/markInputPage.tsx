@@ -6,8 +6,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-
-import cn from 'classnames';
+import { cn } from "@/lib/utils";
 import React, { useState, useRef } from 'react';
 import { AllStudents } from '../../lib/data';
 import { Input } from '@/components/ui/input';
@@ -23,9 +22,7 @@ import {
     PopoverTrigger,
 } from "@/components/ui/popover"
 import { Calendar } from "@/components/ui/calendar"
-import { format } from "date-fns"
-import { CalendarIcon } from 'lucide-react';
-import {getOrdinalSuffix, isSubsequence} from "@/lib/utils";
+import { getOrdinalSuffix, isSubsequence } from "@/lib/utils";
 
 const Dictionary = AllStudents;
 
@@ -34,8 +31,8 @@ const Dictionary = AllStudents;
 
 
 const InputWithSuggestions: React.FC = () => {
-    const [examInfo, setExamInfo] = useState<ExamInfo>({ date: new Date(), fullMark: 100, name: "", batch: "" });
-    const [date, setDate] = React.useState<Date>(new Date());
+    const [examInfo, setExamInfo] = useState<ExamInfo>({ date: "", fullMark: 100, name: "", batch: "" });
+    const [date, setDate] = React.useState("");
     const [fullMark, setFullMark] = useState<string>("10");
 
     const [batchName, setBatchName] = useState<string>();
@@ -153,8 +150,8 @@ const InputWithSuggestions: React.FC = () => {
         var a: ExamInfo = {
             fullMark: parseFloat(fullMark.toString()),
             name: examName || "",
-            date: date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
-            // date: date,
+            // date: date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
+            date: date,
             // batch: batchName as "Alpha" | "Sigma" | "Gamma"
             batch: batchName || ""
 
