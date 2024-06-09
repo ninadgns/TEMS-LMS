@@ -44,7 +44,7 @@ const InputWithSuggestions: React.FC<ExamInfoProps> = ({ examData }) => {
     const inputRef = useRef<HTMLInputElement>(null);
     const markRef = useRef<HTMLInputElement>(null);
 
-    
+
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const value = event.target.value;
@@ -112,9 +112,9 @@ const InputWithSuggestions: React.FC<ExamInfoProps> = ({ examData }) => {
         console.log('Name:', inputName);
         console.log('Mark:', inputMark);
         setData(() => {
-            const a = [...data, { name: inputName, marks: parseFloat(inputMark), position: null, serial: 0 }]
-            .sort((a, b) => b.serial - a.serial)
-            .sort((a, b) => b.marks - a.marks);
+            const a = [...data, { name: inputName, marks: parseFloat(inputMark), position: null, serial: 1000000 }]
+                .sort((a, b) => a.serial - b.serial)
+                .sort((a, b) => b.marks - a.marks);
             let currentPosition = 1;
             let currentMarks = a[0]?.marks;
 
@@ -129,6 +129,8 @@ const InputWithSuggestions: React.FC<ExamInfoProps> = ({ examData }) => {
             a.forEach(entry => {
                 entry.serial = staticserial++;
             })
+            a.sort((a, b) => a.serial - b.serial);
+
             return a;
         })
 

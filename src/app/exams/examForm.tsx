@@ -73,7 +73,7 @@ const ExamForm: React.FC<ExamFormProps> = ({ parentSubmit }) => {
           name="examTopic"
           render={({ field }) => (
             <FormItem className="max-w-96 ">
-              <FormLabel>Exam Name</FormLabel>
+              <FormLabel>Exam Topic</FormLabel>
               <FormControl>
                 <Input placeholder="Modular Arithmatic" {...field} />
               </FormControl>
@@ -98,7 +98,7 @@ const ExamForm: React.FC<ExamFormProps> = ({ parentSubmit }) => {
           name="subject"
           render={({ field }) => (
             <FormItem className="max-w-96 ">
-              <FormLabel>Exam Batch</FormLabel>
+              <FormLabel>Subject</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
@@ -139,7 +139,7 @@ const ExamForm: React.FC<ExamFormProps> = ({ parentSubmit }) => {
           name="batchName"
           render={({ field }) => (
             <FormItem className="max-w-96 ">
-              <FormLabel>Exam Batch</FormLabel>
+              <FormLabel>Batch</FormLabel>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <FormControl>
                   <SelectTrigger>
@@ -161,7 +161,7 @@ const ExamForm: React.FC<ExamFormProps> = ({ parentSubmit }) => {
           name="examDate"
           render={({ field }) => (
             <FormItem className="flex flex-col">
-              <FormLabel>Exam Date</FormLabel>
+              <FormLabel>Date</FormLabel>
               <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>                <PopoverTrigger asChild>
                 <FormControl>
                   <Button

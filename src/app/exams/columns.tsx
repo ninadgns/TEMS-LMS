@@ -41,7 +41,7 @@ export const columns: ColumnDef<ResultEntry>[] = [
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const entry = row.original
+      const entry = row.original;
 
       return (
         <DropdownMenu>
@@ -55,17 +55,16 @@ export const columns: ColumnDef<ResultEntry>[] = [
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
               onClick={
-                () => navigator.clipboard.writeText(entry.name)
-
+                () => entry.serial-=2
               }
             >
-              Copy payment ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+            Move Up
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem>View customer</DropdownMenuItem>
+          <DropdownMenuItem>View payment details</DropdownMenuItem>
+        </DropdownMenuContent>
+        </DropdownMenu >
       )
     }
   }
