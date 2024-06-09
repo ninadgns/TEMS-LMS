@@ -170,17 +170,17 @@ export async function POST(request: NextRequest) {
 			color: rgb(0, 0, 0),
 		});
 		page.drawText(examBatchName, {
-			x: (pageWidth - margin * 2 - imageWidth) / 2 - comicSansBold.widthOfTextAtSize(examBatchName, 20) / 2 + 50,
-			y: -10 + pageHeight - margin - comicSansBold.heightAtSize(25) - comicSansBold.heightAtSize(20) / 2,
+			x: (pageWidth - margin * 2 - imageWidth) / 2 - comicSans.widthOfTextAtSize(examBatchName, 20) / 2 + 50,
+			y: -10 + pageHeight - margin - comicSansBold.heightAtSize(25) - comicSans.heightAtSize(20) / 2,
 			size: 20,
-			font: comicSansBold,
+			font: comicSans,
 			color: rgb(0, 0, 0),
 		});
 		page.drawText(examName, {
-			x: (pageWidth - margin * 2 - imageWidth) / 2 - comicSansBold.widthOfTextAtSize(examName, 18) / 2 + 50,
-			y: -10 + pageHeight - margin - comicSansBold.heightAtSize(25) - comicSansBold.heightAtSize(20) - comicSansBold.heightAtSize(18) / 2,
+			x: (pageWidth - margin * 2 - imageWidth) / 2 - comicSans.widthOfTextAtSize(examName, 18) / 2 + 50,
+			y: -10 + pageHeight - margin - comicSansBold.heightAtSize(25) - comicSans.heightAtSize(20) - comicSans.heightAtSize(18) / 2,
 			size: 18,
-			font: comicSansBold,
+			font: comicSans,
 			color: rgb(0, 0, 0),
 		});
 		page.drawText(examDate, {

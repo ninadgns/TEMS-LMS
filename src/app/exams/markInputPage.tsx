@@ -90,7 +90,8 @@ const InputWithSuggestions: React.FC<ExamInfoProps> = ({ examData }) => {
     const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if ((event.key === "Enter" || event.key === "Tab") && event.target === inputRef.current) {
             event.preventDefault();
-            setInputName(suggestions[0]);
+            if (suggestions[0])
+                setInputName(suggestions[0]);
             setSuggestions([]);
             markRef.current?.focus();
             setSuggestions([event.key])
@@ -105,6 +106,31 @@ const InputWithSuggestions: React.FC<ExamInfoProps> = ({ examData }) => {
     const handleClick = (index: number) => {
         setInputName(suggestions[index]);
         setSuggestions([]);
+    }
+
+    const update = () => {
+        setData(() => {
+            const a = [...data]
+                .sort((a, b) => a.serial - b.serial)
+                .sort((a, b) => b.marks - a.marks);
+            let currentPosition = 1;
+            let currentMarks = a[0]?.marks;
+
+            a.forEach((entry) => {
+                if (entry.marks < currentMarks) {
+                    currentPosition++;
+                    currentMarks = entry.marks;
+                }
+                entry.position = currentPosition;
+            });
+            var staticserial = 1;
+            a.forEach(entry => {
+                entry.serial = staticserial++;
+            })
+            a.sort((a, b) => a.serial - b.serial);
+
+            return a;
+        })
     }
 
     const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -169,6 +195,7 @@ const InputWithSuggestions: React.FC<ExamInfoProps> = ({ examData }) => {
                 </Button>
             </form>
             <Button onClick={handleDownload}>Download PDF</Button>
+            <Button onClick={update}>Update</Button>
 
             <ul>
                 {suggestions.map((word, index) => (
