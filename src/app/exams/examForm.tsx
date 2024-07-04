@@ -52,6 +52,8 @@ const ExamForm: React.FC<ExamFormProps> = ({ parentSubmit }) => {
   const [calendarOpen, setCalendarOpen] = useState(false);
 
   function onSubmit(data: z.infer<typeof ExamSchema>) {
+    data.examDate.setHours(data.examDate.getHours() - data.examDate.getTimezoneOffset() / 60);
+    data.examDate.setMinutes(data.examDate.getHours() - data.examDate.getTimezoneOffset() % 60);
     toast({
       title: "You submitted the following values:",
       description: (
@@ -60,6 +62,8 @@ const ExamForm: React.FC<ExamFormProps> = ({ parentSubmit }) => {
         </pre>
       ),
     })
+
+    console.log(data.examDate.getTimezoneOffset());
     console.log(data);
     parentSubmit(data)
   }
@@ -68,31 +72,7 @@ const ExamForm: React.FC<ExamFormProps> = ({ parentSubmit }) => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-2 m-5">
-        <FormField
-          control={form.control}
-          name="examTopic"
-          render={({ field }) => (
-            <FormItem className="max-w-96 ">
-              <FormLabel>Exam Topic</FormLabel>
-              <FormControl>
-                <Input placeholder="Modular Arithmatic" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        /><FormField
-          control={form.control}
-          name="examFullMark"
-          render={({ field }) => (
-            <FormItem className="max-w-96 ">
-              <FormLabel>Full Marks</FormLabel>
-              <FormControl>
-                <Input placeholder="10" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+
         <FormField
           control={form.control}
           name="subject"
@@ -115,44 +95,40 @@ const ExamForm: React.FC<ExamFormProps> = ({ parentSubmit }) => {
         />
         <FormField
           control={form.control}
-          name="category"
+          name="batchName"
           render={({ field }) => (
             <FormItem className="max-w-96 ">
-              <FormLabel>Category</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select Category" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="Primary">Primary</SelectItem>
-                  <SelectItem value="Junior">Junior</SelectItem>
-                  <SelectItem value="Secondary">Secondary</SelectItem>
-                </SelectContent>
-              </Select>
+              <FormLabel>Batch Name</FormLabel>
+              <FormControl>
+                <Input placeholder="Sigma Junior" {...field} />
+              </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />
         <FormField
           control={form.control}
-          name="batchName"
+          name="examTopic"
           render={({ field }) => (
             <FormItem className="max-w-96 ">
-              <FormLabel>Batch</FormLabel>
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select Batch" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  <SelectItem value="Sigma">Sigma</SelectItem>
-                  <SelectItem value="Alpha">Alpha</SelectItem>
-                  <SelectItem value="Gamma">Gamma</SelectItem>
-                  <SelectItem value="Lambda">Lambda</SelectItem>
-                </SelectContent>
-              </Select>
+              <FormLabel>Exam Topic</FormLabel>
+              <FormControl>
+                <Input placeholder="Modular Arithmatic" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="examFullMark"
+          render={({ field }) => (
+            <FormItem className="max-w-96 ">
+              <FormLabel>Full Marks</FormLabel>
+              <FormControl>
+                <Input placeholder="10" {...field} />
+              </FormControl>
+              <FormMessage />
             </FormItem>
           )}
         />

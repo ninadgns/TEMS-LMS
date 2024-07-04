@@ -10,7 +10,7 @@ import { comicSansBoldFontByte } from '@/lib/comicsansbold';
 import { format } from 'date-fns';
 
 
-
+// vDwj7C0mqHKrUvES
 function toTitleCase(str: string) {
 	return str.replace(
 		/\w\S*/g,
@@ -21,23 +21,6 @@ function toTitleCase(str: string) {
 }
 
 
-// examInfo: {
-//     examTopic: string;
-//     examFullMark: number;
-//     batchName: string;
-//     category: string;
-//     subject: string;
-//     examDate: Date;
-// }
-
-function toBritishDateString(date: Date): string {
-	const day = String(date.getDate()).padStart(2, '0');
-	const month = date.toLocaleString('en-GB', { month: 'long' });
-	const year = date.getFullYear();
-
-	return `${day} ${month} ${year}`;
-}
-
 
 
 
@@ -46,8 +29,8 @@ export async function POST(request: NextRequest) {
 	const examInfo = data.examInfo;
 	const examName = examInfo.examTopic;
 	const examFullMark = "Full Mark: " + examInfo.examFullMark;
-	const examBatchName = examInfo.batchName + " " + examInfo.category + " " + examInfo.subject + " Batch";
-	const examDate = "Date: " + format(examInfo.examDate, 'dd MMMM yyyy'); 
+	const examBatchName = examInfo.batchName + " " + examInfo.subject + " Batch";
+	const examDate = "Date: " + format(examInfo.examDate, 'dd MMMM yyyy');
 	data = data.resultEntries;
 
 	const pdfDoc = await PDFDocument.create();
@@ -56,7 +39,7 @@ export async function POST(request: NextRequest) {
 	const comicSans = await pdfDoc.embedFont(comicSansFontByte);
 	const comicSansBold = await pdfDoc.embedFont(comicSansBoldFontByte);
 	const timesNewRoman = await pdfDoc.embedFont(StandardFonts.TimesRomanBold);
-	const fontSize = 14;
+	var fontSize = 14;
 	const margin = 50;
 	const marginTop = 170;
 	const rowHeight = 25;
@@ -86,7 +69,7 @@ export async function POST(request: NextRequest) {
 			width: tableWidth,
 			height: tableHeight,
 			borderColor: rgb(0, 0, 0),
-			borderWidth: 1,
+			borderWidth: .6,
 		});
 
 		//draw vertical separators
@@ -95,7 +78,7 @@ export async function POST(request: NextRequest) {
 				start: { x: x + columnWidths[index], y: y - rowHeight / 3 },
 				end: { x: x + columnWidths[index], y: y - tableHeight - rowHeight / 3 },
 				color: rgb(0, 0, 0),
-				thickness: 1,
+				thickness: .6,
 			});
 		});
 
@@ -104,7 +87,7 @@ export async function POST(request: NextRequest) {
 				start: { x, y: y - i * rowHeight - rowHeight / 3 },
 				end: { x: x + tableWidth, y: y - i * rowHeight - rowHeight / 3 },
 				color: rgb(0, 0, 0),
-				thickness: 1,
+				thickness: .6,
 			});
 		}
 	};
@@ -117,7 +100,7 @@ export async function POST(request: NextRequest) {
 				x,
 				y,
 				size: fontSize,
-				font: comicSans,
+				font: comicSansBold,
 				color: rgb(0, 0, 0),
 			});
 			x = margin + rowHeight / 3 + columnWidths[index + 1];

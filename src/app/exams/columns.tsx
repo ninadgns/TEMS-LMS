@@ -95,8 +95,10 @@ export const columns: ColumnDef<ResultEntry>[] = [
                   onChange={(e) => entry.serial = parseFloat(e.target.value) - .5}
                   className="col-span-3"
                 />
+
                 <DialogClose asChild>
-                  <Button>Save</Button>
+=                  <Button >Save</Button>
+=                  <Button>Save</Button>
                 </DialogClose>
               </DialogDescription>
             </DialogHeader>

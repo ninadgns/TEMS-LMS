@@ -194,9 +194,10 @@ const InputWithSuggestions: React.FC<ExamInfoProps> = ({ examData }) => {
                     Add Entry
                 </Button>
             </form>
-            <Button onClick={handleDownload}>Download PDF</Button>
-            <Button onClick={update}>Update</Button>
-
+            <div className="flex gap-x-2 my-3">
+                <Button onClick={handleDownload}>Download PDF</Button>
+                <Button onClick={update}>Update Table</Button>
+            </div>
             <ul>
                 {suggestions.map((word, index) => (
                     <li className="mt-2 ml-2 bg-red-100 transform transition-transform duration-200 hover:scale-95" onClick={() => handleClick(index)} key={index}>{word}</li>
