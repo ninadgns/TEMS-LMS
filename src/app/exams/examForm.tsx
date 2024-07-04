@@ -54,6 +54,9 @@ const ExamForm: React.FC<ExamFormProps> = ({ parentSubmit }) => {
   function onSubmit(data: z.infer<typeof ExamSchema>) {
     data.examDate.setHours(data.examDate.getHours() - data.examDate.getTimezoneOffset() / 60);
     data.examDate.setMinutes(data.examDate.getHours() - data.examDate.getTimezoneOffset() % 60);
+    
+    
+    
     toast({
       title: "You submitted the following values:",
       description: (
