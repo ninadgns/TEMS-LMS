@@ -1,24 +1,24 @@
-// pages/index.tsx
 "use client"
-import Head from 'next/head';
-import InputWithSuggestions from './markInputPage';
-import ExamForm from './examForm';
-import { ExamInfo } from '@/lib/types';
+import ExamTable from './examTable';
+import CreateExam from './createExam';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-const Home: React.FC = () => {
-  const [exam, setExam] = useState<ExamInfo>({ batchName: "", examDate: new Date(), examFullMark: 10, examTopic: "", subject: "" });
+const Page: React.FC = () => {
 
-  const onsubmit = (data: ExamInfo) => {
-    setExam(data);
+  const router = useRouter();
+  const [hehe, setHehe] = useState(0);
+   const handleRefresh = () => {
+    router.refresh();
+    setHehe(hehe + 1);
   };
+
+
 
   return (
     <div>
-      {/* <MultiLineForm /> */}
-      <InputWithSuggestions examData={exam} />
-      <ExamForm parentSubmit={onsubmit} />
+      <CreateExam onRefresh={handleRefresh} />
+      <ExamTable hehe={hehe} handleRefresh={handleRefresh} />
     </div>
   );
 };
-
-export default Home;
+export default Page;

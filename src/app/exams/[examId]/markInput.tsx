@@ -7,12 +7,12 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import { cn } from "@/lib/utils";
-import React, { useState, useRef } from 'react';
-import { AllStudents } from '../../lib/data';
+import React, { useState, useRef, useEffect } from 'react';
+import { AllStudents } from '../../../lib/data';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ExamInfo, ResultData, ResultEntry, ResultEntryWithSuffix } from '@/lib/types';
-import { columns } from "./columns";
+import { columns } from "./column";
 import { DataTable } from './dataTable';
 import { Router } from 'next/router';
 import { saveAs } from 'file-saver';
@@ -25,6 +25,9 @@ import { Calendar } from "@/components/ui/calendar"
 import { getOrdinalSuffix, isSubsequence } from "@/lib/utils";
 import { toast, useToast } from "@/components/ui/use-toast";
 import { Title, ToastAction } from "@radix-ui/react-toast";
+import { createClient } from "@/utils/supabase/client";
+import { useFormField } from "@/components/ui/form";
+import { RotateCw } from "lucide-react";
 
 const Dictionary = AllStudents;
 
@@ -35,14 +38,21 @@ export interface ExamInfoProps {
 
 
 
-const InputWithSuggestions: React.FC<ExamInfoProps> = ({ examData }) => {
+const MarkInputPage: React.FC<ExamInfoProps> = ({ examData }) => {
+    const supabase = createClient();
+    console.log(examData.results)
+    const [data, setData] = useState<ResultEntry[]>(examData.results || []);
+    useEffect(() => {
+        if (examData.results)
+            setData(examData.results)
+    }, [examData.results])
 
-    const [data, setData] = useState<ResultEntry[]>([]);
     const [inputName, setInputName] = useState('');
     const [inputMark, setInputMark] = useState('');
     const [suggestions, setSuggestions] = useState<string[]>([]);
     const inputRef = useRef<HTMLInputElement>(null);
     const markRef = useRef<HTMLInputElement>(null);
+
 
 
 
@@ -53,7 +63,37 @@ const InputWithSuggestions: React.FC<ExamInfoProps> = ({ examData }) => {
             isSubsequence(value.toLowerCase(), word.toLowerCase()));
         setSuggestions(filteredSuggestions);
     };
+
+    const save = async () => {
+        if (!examData.id) return
+        const { data: supabaseData, error } = await supabase
+            .from('Exams')
+            .update(
+                { resultEntries: data }
+            )
+            .eq("id", examData.id)
+            .select()
+        if (error) console.log(error)
+        else
+            toast({
+                title: "Table Updated",
+            })
+    }
     const handleDownload = async () => {
+        toast({
+            title: "Please wait while PDF is being generated",
+        })
+
+        if (!examData.id) return
+        const { data: supabaseData, error } = await supabase
+            .from('Exams')
+            .update(
+                { resultEntries: data }
+            )
+            .eq("id", examData.id)
+            .select()
+        if (error) console.log(error)
+
         const rearrangedResults: ResultEntryWithSuffix[] = [];
         data.forEach(result => {
             const rearrangedResult: ResultEntryWithSuffix = {
@@ -82,6 +122,8 @@ const InputWithSuggestions: React.FC<ExamInfoProps> = ({ examData }) => {
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
+
+
 
         const blob = await response.blob();
         saveAs(blob, 'generated.pdf');
@@ -131,7 +173,12 @@ const InputWithSuggestions: React.FC<ExamInfoProps> = ({ examData }) => {
 
             return a;
         })
+        toast({
+            title: "Table Updated",
+        })
     }
+
+
 
     const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -165,13 +212,13 @@ const InputWithSuggestions: React.FC<ExamInfoProps> = ({ examData }) => {
         setInputName('');
         inputRef.current?.focus();
     };
-    const { toast } = useToast();
 
     return (
-        <div className='p-5' >
-
+        <div >
             <div className="mb-5">
-                <DataTable columns={columns} data={data} />
+                {/* <Button onClick={update}>Update Table</Button> */}
+
+                <DataTable columns={columns} data={data} update={update} />
             </div>
             <form onSubmit={handleFormSubmit} className="flex gap-1 mt-2">
                 <Input
@@ -195,8 +242,10 @@ const InputWithSuggestions: React.FC<ExamInfoProps> = ({ examData }) => {
                 </Button>
             </form>
             <div className="flex gap-x-2 my-3">
+                <Button onClick={save}>Save Results for Future</Button>
                 <Button onClick={handleDownload}>Download PDF</Button>
-                <Button onClick={update}>Update Table</Button>
+                <Button onClick={update} className="px-2"><RotateCw /></Button>
+
             </div>
             <ul>
                 {suggestions.map((word, index) => (
@@ -207,4 +256,4 @@ const InputWithSuggestions: React.FC<ExamInfoProps> = ({ examData }) => {
     );
 };
 
-export default InputWithSuggestions;
+export default MarkInputPage;

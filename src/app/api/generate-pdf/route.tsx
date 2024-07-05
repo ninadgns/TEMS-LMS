@@ -27,10 +27,11 @@ function toTitleCase(str: string) {
 export async function POST(request: NextRequest) {
 	var data = await request.json();
 	const examInfo = data.examInfo;
-	const examName = examInfo.examTopic;
-	const examFullMark = "Full Mark: " + examInfo.examFullMark;
+	console.log(examInfo)
+	const examName = examInfo.topic;
+	const examFullMark = "Full Mark: " + examInfo.fullMark;
 	const examBatchName = examInfo.batchName + " " + examInfo.subject + " Batch";
-	const examDate = "Date: " + format(examInfo.examDate, 'dd MMMM yyyy');
+	const examDate = "Date: " + format(examInfo.date, 'dd MMMM yyyy');
 	data = data.resultEntries;
 
 	const pdfDoc = await PDFDocument.create();
@@ -41,7 +42,7 @@ export async function POST(request: NextRequest) {
 	const timesNewRoman = await pdfDoc.embedFont(StandardFonts.TimesRomanBold);
 	var fontSize = 14;
 	const margin = 50;
-	const marginTop = 170;
+	const marginTop = 160;
 	const rowHeight = 25;
 	const pageHeight = 842;
 	const pageWidth = 597.6;
@@ -55,7 +56,6 @@ export async function POST(request: NextRequest) {
 		serialColumnWidth + nameColumnWidth,
 		serialColumnWidth + nameColumnWidth + marksColumnWidth,
 		serialColumnWidth + nameColumnWidth + marksColumnWidth + positionColumnWidth]
-	// const columnWidth = tableWidth / Object.keys(data[0]).length;
 	const keys = Object.keys(data[0]);
 	const headerTitles = ["Sl", "Name", "Marks", "Position"]
 
@@ -68,8 +68,8 @@ export async function POST(request: NextRequest) {
 			y: y - tableHeight - rowHeight / 3,
 			width: tableWidth,
 			height: tableHeight,
-			borderColor: rgb(0, 0, 0),
-			borderWidth: .6,
+			borderColor: rgb(.5, .5, .5),
+			borderWidth: .5,
 		});
 
 		//draw vertical separators
@@ -77,8 +77,8 @@ export async function POST(request: NextRequest) {
 			page.drawLine({
 				start: { x: x + columnWidths[index], y: y - rowHeight / 3 },
 				end: { x: x + columnWidths[index], y: y - tableHeight - rowHeight / 3 },
-				color: rgb(0, 0, 0),
-				thickness: .6,
+				borderColor: rgb(.5, .5, .5),
+				thickness: .4,
 			});
 		});
 
@@ -86,8 +86,9 @@ export async function POST(request: NextRequest) {
 			page.drawLine({
 				start: { x, y: y - i * rowHeight - rowHeight / 3 },
 				end: { x: x + tableWidth, y: y - i * rowHeight - rowHeight / 3 },
-				color: rgb(0, 0, 0),
-				thickness: .6,
+				borderColor: rgb(.5, .5, .5),
+				thickness: .4,
+				
 			});
 		}
 	};
@@ -132,37 +133,44 @@ export async function POST(request: NextRequest) {
 	// Embed the image
 	const imageBuffer = Buffer.from(logoBW, 'base64');
 	const image = await pdfDoc.embedPng(imageBuffer);
-	const imageHeight = 90;
-	const imageWidth = 90;
+	const imageHeight = 85;
+	const imageWidth = 85;
 	// Draw image
 
 
 	function drawTitle() {
 		page.drawImage(image, {
 			x: pageWidth - margin - imageWidth,
-			y: pageHeight - margin - imageHeight,
+			y: pageHeight - margin - imageHeight + 15,
 			width: imageWidth,
 			height: imageHeight,
 		});
+
 		const ClubName = "TEMS Academy of Olympiad Math"
+		const clubNameFontSize = 23
 		page.drawText(ClubName, {
-			x: (pageWidth - margin * 2 - imageWidth) / 2 - comicSansBold.widthOfTextAtSize(ClubName, 24) / 2 + 50,
-			y: -10 + pageHeight - margin - comicSansBold.heightAtSize(24) / 2,
-			size: 24,
+			x: (pageWidth - margin * 2 - imageWidth) / 2 - comicSansBold.widthOfTextAtSize(ClubName, clubNameFontSize) / 2 + 50,
+			y: pageHeight - margin - comicSansBold.heightAtSize(clubNameFontSize) / 2,
+			size: clubNameFontSize,
 			font: comicSansBold,
 			color: rgb(0, 0, 0),
 		});
+		let examBatchNameFontSize = 20
+		while (comicSansBold.widthOfTextAtSize(examBatchName, examBatchNameFontSize) > 400)
+			examBatchNameFontSize--;
+		console.log(examBatchNameFontSize)
 		page.drawText(examBatchName, {
-			x: (pageWidth - margin * 2 - imageWidth) / 2 - comicSans.widthOfTextAtSize(examBatchName, 20) / 2 + 50,
-			y: -10 + pageHeight - margin - comicSansBold.heightAtSize(25) - comicSans.heightAtSize(20) / 2,
-			size: 20,
-			font: comicSans,
+			x: (pageWidth - margin * 2 - imageWidth) / 2 - comicSansBold.widthOfTextAtSize(examBatchName, examBatchNameFontSize) / 2 + 50,
+			y: pageHeight - margin - comicSansBold.heightAtSize(clubNameFontSize) - comicSansBold.heightAtSize(examBatchNameFontSize) / 2,
+			size: examBatchNameFontSize,
+			font: comicSansBold,
 			color: rgb(0, 0, 0),
 		});
+		const examNameFontSize = examBatchNameFontSize - 2;
 		page.drawText(examName, {
-			x: (pageWidth - margin * 2 - imageWidth) / 2 - comicSans.widthOfTextAtSize(examName, 18) / 2 + 50,
-			y: -10 + pageHeight - margin - comicSansBold.heightAtSize(25) - comicSans.heightAtSize(20) - comicSans.heightAtSize(18) / 2,
-			size: 18,
+			x: (pageWidth - margin * 2 - imageWidth) / 2 - comicSans.widthOfTextAtSize(examName, examNameFontSize) / 2 + 50,
+			y: pageHeight - margin - comicSansBold.heightAtSize(clubNameFontSize) - comicSansBold.heightAtSize(examBatchNameFontSize) - comicSans.heightAtSize(examNameFontSize) * 2 / 3,
+			size: examNameFontSize,
 			font: comicSans,
 			color: rgb(0, 0, 0),
 		});
