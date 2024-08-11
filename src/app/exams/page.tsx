@@ -6,10 +6,10 @@ import { useState } from 'react';
 const Page: React.FC = () => {
 
   const router = useRouter();
-  const [hehe, setHehe] = useState(0);
-   const handleRefresh = () => {
+  const [refreshVar, setRefreshVar] = useState(0);
+  const handleRefresh = () => {
     router.refresh();
-    setHehe(hehe + 1);
+    setRefreshVar(refreshVar + 1);
   };
 
 
@@ -17,7 +17,7 @@ const Page: React.FC = () => {
   return (
     <div>
       <CreateExam onRefresh={handleRefresh} />
-      <ExamTable hehe={hehe} handleRefresh={handleRefresh} />
+      <ExamTable refreshVar={refreshVar} />
     </div>
   );
 };

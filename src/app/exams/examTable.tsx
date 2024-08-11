@@ -19,7 +19,7 @@ export const SortButton = ({ name, column }: { name: string, column: any }) => {
     </Button>
 }
 
-const ExamTable = ({ hehe, handleRefresh }: { hehe: number, handleRefresh: () => void }) => {
+const ExamTable = ({ refreshVar }: { refreshVar: number }) => {
     const supabase = createClient();
     const router = useRouter();
 
@@ -38,15 +38,30 @@ const ExamTable = ({ hehe, handleRefresh }: { hehe: number, handleRefresh: () =>
             }
 
             console.log(Exams)
-            if (Exams)
-                setExams(Exams.map(exam => ({
+
+            const DateWiseSortedExams = Exams?.sort((a, b) => {
+                // Convert the date strings to Date objects for accurate comparison
+                const dateA = new Date(a.date);
+                const dateB = new Date(b.date);
+
+                // Sort in ascending order (earliest date first)
+                // return dateA.getTime() - dateB.getTime();
+
+                // For descending order (latest date first), use:
+                return dateB.getTime() - dateA.getTime();
+            });
+
+            if (DateWiseSortedExams)
+                setExams(DateWiseSortedExams.map(exam => ({
                     ...exam, date: new Date(exam.date)
                 })))
+
+
 
         }
 
         fetchData();
-    }, [hehe]); 
+    }, [refreshVar]);
 
     const ExamColumns: ColumnDef<ExamInfo>[] = [
         {
@@ -78,10 +93,8 @@ const ExamTable = ({ hehe, handleRefresh }: { hehe: number, handleRefresh: () =>
         }
 
     ]
-
-
     return (
-        <DataTable columns={ExamColumns} data={exams} handleRefresh={handleRefresh} />
+        <DataTable columns={ExamColumns} data={exams} />
     )
 };
 
