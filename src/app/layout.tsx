@@ -65,8 +65,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <div className="grid min-h-screen w-full md:grid-cols-[150px_1fr] lg:grid-cols-[200px_1fr]">
-          <div className="hidden border-r bg-muted/40 md:block">
+        <div className="grid min-h-screen w-full md:grid-cols-[160px_1fr] lg:grid-cols-[192px_1fr]">
+          <div className="fixed hidden border-r bg-muted/40 md:block min-h-screen md:min-w-40 lg:min-w-48">
             <div className="flex h-full max-h-screen flex-col gap-2">
               <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
                 <Link href="/" className="flex items-center gap-2 font-semibold">
@@ -77,18 +77,9 @@ export default function RootLayout({
               <div className="flex-1">
                 <Navbar routes={routes} />
               </div>
-              <div className="my-2 px-2">
-                <Link
-                  key="/profile"
-                  href="/profile"
-                  className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all
-                    } hover:text-primary`}
-                >
-                  {<CircleUser className="h-5 w-5" />}
-                  {"Profile"}
-                </Link>              </div>
             </div>
           </div>
+          <div></div>
           <div className="flex flex-col">
             {/* <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
               <NavPhone routes={routes} />
