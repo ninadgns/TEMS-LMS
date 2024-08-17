@@ -24,7 +24,7 @@ const AddStudent = () => {
         const { data, error } = await supabase
             .from('Students')
             .insert([
-                { name: inputName  },
+                { name: inputName },
             ])
             .select()
         if (error)
@@ -50,13 +50,13 @@ const AddStudent = () => {
     return (
         <div>
             <AlertDialog>
-                <AlertDialogTrigger asChild>
 
-                    <div className="flex flex-row justify-between">
-                        <h1 className="text-2xl font-semibold">Students</h1>
+                <div className="flex flex-row justify-between">
+                    <h1 className="text-2xl font-semibold">Students</h1>
+                    <AlertDialogTrigger asChild>
                         <Button className="ml-auto" >Add Student</Button>
-                    </div>
-                </AlertDialogTrigger>
+                    </AlertDialogTrigger>
+                </div>
                 <AlertDialogContent>
                     <AlertDialogHeader>
                         <AlertDialogTitle>Enter name</AlertDialogTitle>

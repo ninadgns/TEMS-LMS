@@ -89,9 +89,13 @@ const CreateExam = ({ onRefresh }: { onRefresh: () => void }) => {
 	return (
 		<div>
 			<Dialog>
-				<DialogTrigger asChild>
-					<div className="flex mb-2 "><Button className="ml-auto">Create Exam</Button></div>
-				</DialogTrigger>
+				<div className="flex mb-2 ">
+					<h1 className="text-2xl font-semibold">Exams</h1>
+
+					<DialogTrigger asChild>
+						<Button className="ml-auto">Create Exam</Button>
+					</DialogTrigger>
+				</div>
 
 				<DialogContent>
 					<DialogHeader>
