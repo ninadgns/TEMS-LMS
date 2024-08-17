@@ -44,6 +44,11 @@ const routes: Route[] = [
         path: '/exams',
         label: 'Exams',
         Icon: <BookIcon />
+    },
+    {
+        path: '/students',
+        label:'Students',
+        Icon: <UsersIcon/>
     }
 ];
 

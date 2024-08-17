@@ -17,6 +17,7 @@ export default function Page({ params }: { params: { examId: string } }) {
     const router = useRouter();
     const supabase = createClient();
     const [examData, setExamData] = useState<ExamInfo>({ batchName: "", date: new Date(), fullMark: 8, topic: "", subject: "" });
+    const [Dictionary, setDictionary] = useState<string[]>([]);
     const [hehe, setHehe] = useState(0);
 
     useEffect(() => {
@@ -33,11 +34,19 @@ export default function Page({ params }: { params: { examId: string } }) {
                 setExamData({ ...otherEntries, results: parsedResults, date: new Date(Exams[0].date) });
             }
             else console.log(error);
-
         }
-
         fetch();
     }, [params, hehe])
+    useEffect(() => {
+        const fetch = async () => {
+            let { data: DictionaryMaybeNull, error: studentError } = await supabase.from("Students").select("name")
+            let dict = [""]
+            if (DictionaryMaybeNull)
+                dict = DictionaryMaybeNull.map(entry => entry.name);
+            setDictionary(dict);
+        }
+        fetch();
+    }, [])
 
     const handleRefresh = () => {
         router.refresh();
@@ -57,7 +66,7 @@ export default function Page({ params }: { params: { examId: string } }) {
                     </CardHeader>
                 </Card>}
 
-            <MarkInputPage examData={examData} />
+            <MarkInputPage Dictionary={Dictionary} examData={examData} />
 
         </div>
     );

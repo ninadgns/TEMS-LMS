@@ -13,8 +13,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ExamInfo, ResultData, ResultEntry, ResultEntryWithSuffix } from '@/lib/types';
 import { columns } from "./column";
-import { DataTable } from './dataTable';
-import { Router } from 'next/router';
+import { DataTable } from "@/components/tanStackTable";
 import { saveAs } from 'file-saver';
 import {
     Popover,
@@ -29,18 +28,19 @@ import { createClient } from "@/utils/supabase/client";
 import { useFormField } from "@/components/ui/form";
 import { RotateCw } from "lucide-react";
 
-const Dictionary = AllStudents;
+// const Dictionary = AllStudents;
 
 
 export interface ExamInfoProps {
     examData: ExamInfo
+    Dictionary: string[]
 }
 
 
 
-const MarkInputPage: React.FC<ExamInfoProps> = ({ examData }) => {
+const MarkInputPage: React.FC<ExamInfoProps> = ({ examData, Dictionary }) => {
     const supabase = createClient();
-    console.log(examData.results)
+    // console.log(examData.results)
     const [data, setData] = useState<ResultEntry[]>(examData.results || []);
     useEffect(() => {
         if (examData.results)
@@ -218,7 +218,7 @@ const MarkInputPage: React.FC<ExamInfoProps> = ({ examData }) => {
             <div className="mb-5">
                 {/* <Button onClick={update}>Update Table</Button> */}
 
-                <DataTable columns={columns} data={data} update={update} />
+                <DataTable filter="name" columns={columns} data={data} />
             </div>
             <form onSubmit={handleFormSubmit} className="flex gap-1 mt-2">
                 <Input

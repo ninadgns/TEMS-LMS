@@ -1,6 +1,6 @@
 "use client"
 import React, { useEffect, useState } from "react"
-import { DataTable } from "./tanStackTable";
+import { DataTable } from "@/components/tanStackTable";
 import { createClient } from "@/utils/supabase/client";
 import { ColumnDef } from "@tanstack/react-table"
 import { ExamInfo, ResultEntry } from "@/lib/types";
@@ -94,7 +94,7 @@ const ExamTable = ({ refreshVar }: { refreshVar: number }) => {
 
     ]
     return (
-        <DataTable columns={ExamColumns} data={exams} />
+        <DataTable filter="batchName" columns={ExamColumns} data={exams} />
     )
 };
 

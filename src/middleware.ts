@@ -5,16 +5,15 @@ import { createClient } from './utils/supabase/server';
 export async function middleware(request: NextRequest) {
     const client = createClient();
     const { data: { user: userSession } } = await client.auth.getUser();
-
     console.log('Middleware run');
 
     // if (userSession === null) {
-    //     if (request.nextUrl.pathname !== "/login") {
-    //         const loginUrl = request.nextUrl.clone();
-    //         loginUrl.pathname = `/login`;
-    //         return NextResponse.redirect(loginUrl);
-    //     }
-    //     return;
+    if (request.nextUrl.pathname === "/") {
+        const examUrl = request.nextUrl.clone();
+        examUrl.pathname = `/exams`;
+        return NextResponse.redirect(examUrl);``
+    }
+    return;
     // }
 }
 

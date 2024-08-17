@@ -10,6 +10,10 @@ export const ResultEntrySchema = z.object({
 
 export type ResultEntry = z.infer<typeof ResultEntrySchema>
 
+export type Student = {
+  id: number;
+  name: string;
+}
 
 export const ExamSchema = z.object({
   id: z.number().optional(),
