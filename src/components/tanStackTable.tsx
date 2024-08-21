@@ -20,9 +20,10 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table"
-import React from "react"
+import React, { useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import { Select, SelectContent, SelectItem, SelectTrigger } from "./ui/select"
 
 interface DataTableProps<TData, TValue> {
 	columns: ColumnDef<TData, TValue>[]
@@ -30,11 +31,18 @@ interface DataTableProps<TData, TValue> {
 	filter: string
 }
 
+
+
 export function DataTable<TData, TValue>({ columns, data, filter }: DataTableProps<TData, TValue>) {
 	const [sorting, setSorting] = React.useState<SortingState>([])
 	const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
 		[]
 	)
+	const [pagination, setPagination] = useState({
+		pageIndex: 0, //initial page index
+		pageSize: 10, //default page size
+	});
+
 
 	const table = useReactTable({
 		data,
@@ -49,13 +57,16 @@ export function DataTable<TData, TValue>({ columns, data, filter }: DataTablePro
 		state: {
 			sorting,
 			columnFilters,
+			pagination,
 
 		}
 	})
 
+
 	return (
+
 		<div>
-			<div className="flex items-center py-4 justify-between">
+			<div className="flex gap-3 items-center py-4 justify-between">
 				<Input
 					placeholder={`Filter ${filter}...`}
 					value={(table.getColumn(filter)?.getFilterValue() as string) ?? ""}
@@ -64,7 +75,6 @@ export function DataTable<TData, TValue>({ columns, data, filter }: DataTablePro
 					}
 					className="max-w-sm"
 				/>
-
 			</div>
 			<div className="rounded-md border">
 				<Table>
@@ -110,24 +120,50 @@ export function DataTable<TData, TValue>({ columns, data, filter }: DataTablePro
 					</TableBody>
 				</Table>
 			</div>
-			<div className="flex items-center justify-end space-x-2 py-4">
-				<Button
-					variant="outline"
-					size="sm"
-					onClick={() => table.previousPage()}
-					disabled={!table.getCanPreviousPage()}
+			<div className="flex items-center justify-between py-4">
+				<Select
+					value={table.getState().pagination.pageSize.toString()}
+					onValueChange={(value) => setPagination(prev => ({
+						...prev,
+						pageSize: Number(value),
+					}))}
 				>
-					Previous
-				</Button>
-				<Button
-					variant="outline"
-					size="sm"
-					onClick={() => table.nextPage()}
-					disabled={!table.getCanNextPage()}
-				>
-					Next
-				</Button>
+					<SelectTrigger className="w-auto">
+						<span >{table.getState().pagination.pageSize}</span>
+					</SelectTrigger>
+					<SelectContent className="w-auto">
+						{[10, 20, 30, 40, 50].map(size => (
+							<SelectItem key={size} value={size.toString()}>
+								{size}
+							</SelectItem>
+						))}
+					</SelectContent>
+				</Select>
+				<div className="space-x-2">
+					<Button
+						variant="outline"
+						size="sm"
+						onClick={() => setPagination(prev => ({
+							...prev,
+							pageIndex: prev.pageIndex - 1
+						}))}
+						disabled={!table.getCanPreviousPage()}
+					>
+						Previous
+					</Button>
+					<Button
+						variant="outline"
+						size="sm"
+						onClick={() => setPagination(prev => ({
+							...prev,
+							pageIndex: prev.pageIndex + 1
+						}))}
+						disabled={!table.getCanNextPage()}
+					>
+						Next
+					</Button>
+				</div>
 			</div>
-		</div>
+		</div >
 	)
 }
