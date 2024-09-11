@@ -47,16 +47,48 @@ import {
 } from "@/components/ui/popover"
 import { toast } from "@/components/ui/use-toast"
 import { useRef, useState } from "react"
-import { ExamInfo, ExamSchema } from "@/lib/types"
+import { ExamInfo, ExamSchema, ExamTypeDB } from "@/lib/types"
 import { createClient } from "@/utils/supabase/client"
 import { useRouter } from "next/navigation";
+import ExamTable from "./examTable";
 
 
-const CreateExam = ({ onRefresh }: { onRefresh: () => void }) => {
+const CreateExam = ({ ExamData }: { ExamData: ExamTypeDB[] }) => {
 	const router = useRouter();
 	const form = useForm<z.infer<typeof ExamSchema>>({
 		resolver: zodResolver(ExamSchema),
 	})
+
+	const [Exams, setExams] = useState<ExamTypeDB[]>(ExamData);
+
+
+	const fetchData = async () => {
+		let { data: Exams, error } = await supabase
+			.from('Exams')
+			.select('*')
+
+		if (error) {
+			console.log(error);
+		}
+
+		console.log(Exams)
+
+		const DateWiseSortedExams = Exams?.sort((a, b) => {
+			// Convert the date strings to Date objects for accurate comparison
+			const dateA = new Date(a.date);
+			const dateB = new Date(b.date);
+
+			// Sort in ascending order (earliest date first)
+			// return dateA.getTime() - dateB.getTime();
+
+			// For descending order (latest date first), use:
+			return dateB.getTime() - dateA.getTime();
+		});
+
+		if (DateWiseSortedExams)
+			setExams(DateWiseSortedExams);
+	}
+
 
 	const [calendarOpen, setCalendarOpen] = useState(false);
 	const supabase = createClient();
@@ -71,7 +103,7 @@ const CreateExam = ({ onRefresh }: { onRefresh: () => void }) => {
 			)
 			.select()
 
-
+		if (!error) { fetchData(); }
 
 		toast({
 			title: "You submitted the following values:",
@@ -81,9 +113,6 @@ const CreateExam = ({ onRefresh }: { onRefresh: () => void }) => {
 				</pre>
 			),
 		})
-		setTimeout(() => {
-			onRefresh();
-		}, 1000);
 
 	}
 	return (
@@ -212,6 +241,7 @@ const CreateExam = ({ onRefresh }: { onRefresh: () => void }) => {
 					</DialogHeader>
 				</DialogContent>
 			</Dialog>
+			<ExamTable ExamData={Exams} />
 		</div>
 	)
 };

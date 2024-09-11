@@ -9,7 +9,6 @@ import {
 	FormLabel,
 	FormMessage,
 } from '@/components/ui/form';
-import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import {
 	Card,
@@ -23,6 +22,7 @@ import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { createClient } from '@/utils/supabase/client';
+import { toast } from 'sonner';
 import { redirect, useRouter } from 'next/navigation';
 // import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from 'next/cache';
@@ -43,7 +43,6 @@ export default function LoginForm() {
 			password: '',
 		},
 	});
-
 
 
 	const onSubmit = async (values: z.infer<typeof loginFormSchema>) => {
@@ -69,7 +68,7 @@ export default function LoginForm() {
 			success: (data: any) => {
 				form.reset();
 				setTimeout(() => {
-					router.push('/');
+					router.push('/exams');
 				}, 500);
 				return data;
 			},

@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/select"
 import { cn } from "@/lib/utils";
 import React, { useState, useRef, useEffect } from 'react';
-import { AllStudents } from '../../../lib/data';
+import { AllStudents } from '../../../../lib/data';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ExamInfo, ResultData, ResultEntry, ResultEntryWithSuffix } from '@/lib/types';

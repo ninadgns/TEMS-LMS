@@ -1,17 +1,30 @@
 import { type NextRequest, NextResponse } from 'next/server'
 import { updateSession } from '@/utils/supabase/middleware'
 import { createClient } from './utils/supabase/server';
+import { redirect } from 'next/dist/server/api-utils';
 
 export async function middleware(request: NextRequest) {
+    updateSession(request);
     const client = createClient();
     const { data: { user: userSession } } = await client.auth.getUser();
     console.log('Middleware run');
 
+
+    if (userSession === null && request.nextUrl.pathname !== "/login") {
+        const examUrl = request.nextUrl.clone();
+        examUrl.pathname = `/login`;
+        return NextResponse.redirect(examUrl);
+    };
+    if (request.nextUrl.pathname === "/login" && userSession !== null) {
+        const examUrl = request.nextUrl.clone();
+        examUrl.pathname = `/exams`;
+        return NextResponse.redirect(examUrl);
+    }
     // if (userSession === null) {
     if (request.nextUrl.pathname === "/") {
         const examUrl = request.nextUrl.clone();
         examUrl.pathname = `/exams`;
-        return NextResponse.redirect(examUrl);``
+        return NextResponse.redirect(examUrl);
     }
     return;
     // }

@@ -1,5 +1,6 @@
 import { z } from "zod"
 import { ReactNode } from "react"
+import { Database } from "@/utils/supabase/database.types";
 
 export const ResultEntrySchema = z.object({
   serial: z.number(),
@@ -26,6 +27,7 @@ export const ExamSchema = z.object({
 })
 
 export type ExamInfo = z.infer<typeof ExamSchema>;
+export type ExamTypeDB = Database["public"]["Tables"]["Exams"]["Row"]
 
 export interface Route {
   path: string;

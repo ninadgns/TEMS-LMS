@@ -54,17 +54,16 @@ export default function Page({ params }: { params: { examId: string } }) {
     };
     return (
         <div>
-            {examData.batchName != "" &&
-                <Card className='mb-5'>
-                    <CardHeader>
-                        <CardTitle><div className="flex justify-between"><div >{examData.topic + " - " + examData.batchName + " " + examData.subject}</div>
-                            <div>
-                                <EditExamInfo params={{ initialData: examData }} onRefresh={handleRefresh} />
-                            </div>
-                        </div></CardTitle>
-                        <CardDescription>{examData.date.toUTCString().slice(0, 16)}<br></br>Full Mark: {examData.fullMark}</CardDescription>
-                    </CardHeader>
-                </Card>}
+            <Card className='mb-5'>
+                <CardHeader>
+                    <CardTitle><div className="flex justify-between"><div >{examData.topic + " - " + examData.batchName + " " + examData.subject}</div>
+                        <div>
+                            <EditExamInfo params={{ initialData: examData }} onRefresh={handleRefresh} />
+                        </div>
+                    </div></CardTitle>
+                    <CardDescription>{examData.date.toUTCString().slice(0, 16)}<br></br>Full Mark: {examData.fullMark}</CardDescription>
+                </CardHeader>
+            </Card>
 
             <MarkInputPage Dictionary={Dictionary} examData={examData} />
 
