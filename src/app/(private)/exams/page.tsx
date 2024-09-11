@@ -16,7 +16,7 @@ const Page: React.FC = async () => {
     console.log(error);
   }
 
-  console.log(ExamsMaybeNull)
+  // console.log(ExamsMaybeNull)
   Exams = ExamsMaybeNull as NonNullable<typeof ExamsMaybeNull>;
   let DateWiseSortedExams = Exams?.sort((a, b) => {
     // Convert the date strings to Date objects for accurate comparison
@@ -38,7 +38,7 @@ const Page: React.FC = async () => {
       console.log(error);
     }
 
-    console.log(ExamsMaybeNull)
+    // console.log(ExamsMaybeNull)
     Exams = ExamsMaybeNull as NonNullable<typeof ExamsMaybeNull>;
     DateWiseSortedExams = Exams?.sort((a, b) => {
       // Convert the date strings to Date objects for accurate comparison

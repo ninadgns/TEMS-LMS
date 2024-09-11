@@ -207,7 +207,7 @@ const MarkInputPage: React.FC<ExamInfoProps> = ({ examData, Dictionary }) => {
             return a;
         })
 
-        console.log(data);
+        // console.log(data);
         setInputMark('');
         setInputName('');
         inputRef.current?.focus();

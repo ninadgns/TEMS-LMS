@@ -68,14 +68,15 @@ export default function LoginForm() {
 			success: (data: any) => {
 				form.reset();
 				setTimeout(() => {
-					router.push('/exams');
-				}, 500);
+					router.push('/');
+				}, 3000);
 				return data;
 			},
 			error: (err) => {
 				form.reset();
 				return err;
 			},
+			
 		});
 	};
 

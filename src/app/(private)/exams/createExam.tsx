@@ -71,7 +71,7 @@ const CreateExam = ({ ExamData }: { ExamData: ExamTypeDB[] }) => {
 			console.log(error);
 		}
 
-		console.log(Exams)
+		// console.log(Exams)
 
 		const DateWiseSortedExams = Exams?.sort((a, b) => {
 			// Convert the date strings to Date objects for accurate comparison

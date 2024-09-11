@@ -11,7 +11,7 @@ const Students = async () => {
         .from('Students')
         .select('id, name')
     //  console.log(error)
-        console.log(studentsMaybeNull);
+        // console.log(studentsMaybeNull);
     const students = studentsMaybeNull as NonNullable<typeof studentsMaybeNull>
     return (
         <div className="">

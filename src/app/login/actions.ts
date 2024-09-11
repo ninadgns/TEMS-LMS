@@ -33,7 +33,7 @@ export async function login(values: z.infer<typeof loginFormSchema>) {
 
     return {
         status: "success",
-        message: "Successfully logged in"
+        message: "Successfully logged in. Please wait while we redirect you to dashboard."
     }
 }
 
