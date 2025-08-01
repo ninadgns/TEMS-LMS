@@ -153,7 +153,7 @@ export default function Home() {
       <div className="max-w-4xl mx-auto px-4">
         <div className="bg-white rounded-lg shadow-lg p-6">
           <h1 className="text-3xl font-bold text-center text-blue-600 mb-8">
-            TEMS Student Batch Finder
+            TEMS Student Registration Status Finder
           </h1>
 
           {/* Loading/Error Status */}
