@@ -53,7 +53,7 @@ export default function Home() {
         setError('');
         
         // Fetch from public folder - Next.js serves files from public/ at root URL
-        const response = await fetch('/tems.csv');
+        const response = await fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vR50j6mee4LKvaeGskUEWCE_z_hUl-RqTeqRriqMINjlHJHyE79k5eBZY4sOy1_qgK0OYgVLYFBoUFo/pub?gid=1548872828&single=true&output=csv');
         if (!response.ok) {
           throw new Error(`Failed to load CSV file: ${response.status} ${response.statusText}`);
         }
