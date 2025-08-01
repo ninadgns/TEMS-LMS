@@ -200,19 +200,37 @@ export default function Home() {
                   1. Select Subject
                 </label>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
-                  {subjects.map((subject) => (
-                    <button
-                      key={subject.value}
-                      onClick={() => handleSubjectChange(subject.value)}
-                      className={`p-3 rounded-lg border-2 text-center transition-colors ${
-                        selectedSubject === subject.value
-                          ? 'border-blue-500 bg-blue-50 text-blue-700'
-                          : 'border-gray-200 hover:border-gray-300'
-                      }`}
-                    >
-                      {subject.label}
-                    </button>
-                  ))}
+                  {subjects.map((subject) => {
+                    // Count students for each subject
+                    const subjectCount = data.filter(student => {
+                      if (subject.value === 'Chess') {
+                        return student['Chess Batch Name'] && student['Chess Batch Name'].trim() !== '';
+                      }
+                      // For Math and Science, check all categories
+                      const categories = ['Primary', 'Junior', 'Secondary', 'Higher Secondary'];
+                      return categories.some(cat => {
+                        const columnName = `${subject.value} Batch Name [${cat}]`;
+                        return student[columnName] && student[columnName].trim() !== '';
+                      });
+                    }).length;
+
+                    return (
+                      <button
+                        key={subject.value}
+                        onClick={() => handleSubjectChange(subject.value)}
+                        className={`p-3 rounded-lg border-2 text-center transition-colors ${
+                          selectedSubject === subject.value
+                            ? 'border-blue-500 bg-blue-50 text-blue-700'
+                            : 'border-gray-200 hover:border-gray-300'
+                        }`}
+                      >
+                        <div className="font-medium">{subject.label}</div>
+                        <div className="text-xs text-gray-500 mt-1">
+                          {subjectCount} students
+                        </div>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
@@ -223,19 +241,30 @@ export default function Home() {
                     2. Select {selectedSubject} Category
                   </label>
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-2">
-                    {categories.map((category) => (
-                      <button
-                        key={category.value}
-                        onClick={() => handleCategoryChange(category.value)}
-                        className={`p-3 rounded-lg border-2 text-center transition-colors ${
-                          selectedCategory === category.value
-                            ? 'border-blue-500 bg-blue-50 text-blue-700'
-                            : 'border-gray-200 hover:border-gray-300'
-                        }`}
-                      >
-                        {category.label}
-                      </button>
-                    ))}
+                    {categories.map((category) => {
+                      // Count students for each category
+                      const columnName = getColumnName(selectedSubject, category.value);
+                      const categoryCount = data.filter(student => 
+                        student[columnName] && student[columnName].trim() !== ''
+                      ).length;
+
+                      return (
+                        <button
+                          key={category.value}
+                          onClick={() => handleCategoryChange(category.value)}
+                          className={`p-3 rounded-lg border-2 text-center transition-colors ${
+                            selectedCategory === category.value
+                              ? 'border-blue-500 bg-blue-50 text-blue-700'
+                              : 'border-gray-200 hover:border-gray-300'
+                          }`}
+                        >
+                          <div className="font-medium">{category.label}</div>
+                          <div className="text-xs text-gray-500 mt-1">
+                            {categoryCount} students
+                          </div>
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               )}
@@ -256,21 +285,32 @@ export default function Home() {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     3. Available {selectedSubject} Batches 
                     {selectedSubject !== 'Chess' && ` for ${selectedCategory}`}
+                    <span className="text-blue-600 ml-2">({availableBatches.length} batches available)</span>
                   </label>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
-                    {availableBatches.map((batch, index) => (
-                      <button
-                        key={index}
-                        onClick={() => handleBatchChange(batch)}
-                        className={`p-3 rounded-lg border-2 text-center transition-colors ${
-                          selectedBatch === batch
-                            ? 'border-blue-500 bg-blue-50 text-blue-700'
-                            : 'border-gray-200 hover:border-gray-300'
-                        }`}
-                      >
-                        {batch}
-                      </button>
-                    ))}
+                    {availableBatches.map((batch, index) => {
+                      // Count students for each batch
+                      const category = selectedSubject === 'Chess' ? 'All Classes' : selectedCategory;
+                      const columnName = getColumnName(selectedSubject, category);
+                      const batchCount = data.filter(student => student[columnName] === batch).length;
+
+                      return (
+                        <button
+                          key={index}
+                          onClick={() => handleBatchChange(batch)}
+                          className={`p-3 rounded-lg border-2 text-center transition-colors ${
+                            selectedBatch === batch
+                              ? 'border-blue-500 bg-blue-50 text-blue-700'
+                              : 'border-gray-200 hover:border-gray-300'
+                          }`}
+                        >
+                          <div className="font-medium text-sm">{batch}</div>
+                          <div className="text-xs text-gray-500 mt-1">
+                            {batchCount} students
+                          </div>
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               )}
