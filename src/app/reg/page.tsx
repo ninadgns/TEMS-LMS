@@ -30,6 +30,8 @@ export default function Home() {
   const [availableBatches, setAvailableBatches] = useState<string[]>([]);
   const [filteredStudents, setFilteredStudents] = useState<Student[]>([]);
   const [showResults, setShowResults] = useState(false);
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [displayedStudents, setDisplayedStudents] = useState<Student[]>([]);
 
   const subjects = [
     { value: 'Math', label: 'Math' },
@@ -128,6 +130,7 @@ export default function Home() {
 
   const handleBatchChange = (batch: string) => {
     setSelectedBatch(batch);
+    setSearchTerm(''); // Reset search when batch changes
     
     if (!selectedSubject || !batch || !data.length) return;
 
@@ -136,7 +139,27 @@ export default function Home() {
     
     const filtered = data.filter(student => student[columnName] === batch);
     setFilteredStudents(filtered);
+    setDisplayedStudents(filtered);
     setShowResults(true);
+  };
+
+  const handleSearchChange = (term: string) => {
+    setSearchTerm(term);
+    
+    if (!term.trim()) {
+      setDisplayedStudents(filteredStudents);
+      return;
+    }
+
+    const searchResults = filteredStudents.filter(student => {
+      const englishName = student['Full Name of Student(English)']?.toLowerCase() || '';
+      const banglaName = student['Full Name of Student(বাংলা)']?.toLowerCase() || '';
+      const searchLower = term.toLowerCase();
+      
+      return englishName.includes(searchLower) || banglaName.includes(searchLower);
+    });
+    
+    setDisplayedStudents(searchResults);
   };
 
   const resetForm = () => {
@@ -145,7 +168,9 @@ export default function Home() {
     setSelectedBatch('');
     setAvailableBatches([]);
     setFilteredStudents([]);
+    setDisplayedStudents([]);
     setShowResults(false);
+    setSearchTerm('');
   };
 
   return (
@@ -264,16 +289,37 @@ export default function Home() {
                       Search Again
                     </button>
                   </div>
+
+                  {/* Search Bar */}
+                  <div className="mb-6">
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Search by Name
+                    </label>
+                    <input
+                      type="text"
+                      value={searchTerm}
+                      onChange={(e) => handleSearchChange(e.target.value)}
+                      placeholder="Enter student name (English or বাংলা)..."
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                    {searchTerm && (
+                      <p className="text-sm text-gray-600 mt-1">
+                        Showing {displayedStudents.length} of {filteredStudents.length} students
+                      </p>
+                    )}
+                  </div>
                   
-                  {filteredStudents.length === 0 ? (
-                    <p className="text-gray-600">No students found for this selection.</p>
+                  {displayedStudents.length === 0 ? (
+                    <p className="text-gray-600">
+                      {searchTerm ? 'No students found matching your search.' : 'No students found for this selection.'}
+                    </p>
                   ) : (
                     <>
                       <p className="text-lg font-medium text-gray-700 mb-4">
-                        Total Students: {filteredStudents.length}
+                        {searchTerm ? `Found: ${displayedStudents.length}` : `Total Students: ${displayedStudents.length}`}
                       </p>
                       <div className="space-y-4">
-                        {filteredStudents.map((student, index) => (
+                        {displayedStudents.map((student, index) => (
                           <div key={index} className="bg-white p-4 rounded-lg border">
                             <div className="flex items-start justify-between">
                               <div className="flex-1">
