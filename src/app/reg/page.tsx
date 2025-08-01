@@ -62,7 +62,7 @@ export default function Home() {
         Papa.parse(csvText, {
           header: true,
           skipEmptyLines: true, // Skip empty lines
-          complete: (results) => {
+          complete: (results: { errors: string | any[]; data: any[]; }) => {
             if (results.errors.length > 0) {
               console.error('CSV parsing errors:', results.errors);
               setError('Error parsing CSV file');
@@ -76,7 +76,7 @@ export default function Home() {
             }
             setLoading(false);
           },
-          error: (error) => {
+          error: (error: { message: any; }) => {
             console.error('Papa Parse error:', error);
             setError(`Error reading CSV: ${error.message}`);
             setLoading(false);
