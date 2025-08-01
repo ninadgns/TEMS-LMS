@@ -60,7 +60,7 @@ export default function Home() {
         
         const csvText = await response.text();
         console.log('CSV file loaded successfully');
-        console.log(csvText)
+        // console.log(csvText)
         Papa.parse(csvText, {
           header: true,
           skipEmptyLines: true, // Skip empty lines
